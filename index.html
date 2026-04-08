@@ -13,15 +13,15 @@
         }
 
         :root {
-            --primary: #2563EB;
-            --secondary: #7C3AED;
-            --accent: #DC2626;
-            --bg: #FFFFFF;
-            --surface: #F8FAFC;
-            --text: #1E293B;
-            --text-muted: #64748B;
-            --success: #059669;
-            --border: #E2E8F0;
+            --primary: #FF8C42;
+            --secondary: #FFB366;
+            --accent: #FF6B6B;
+            --bg: #0A1628;
+            --surface: #152238;
+            --text: #E8EDF2;
+            --text-muted: #9BA5B7;
+            --success: #10B981;
+            --border: #2A3F5F;
         }
 
         body {
@@ -97,7 +97,7 @@
             border-radius: 6px;
             overflow: hidden;
             transition: all 0.3s ease;
-            background: white;
+            background: var(--surface);
         }
 
         .step-section:hover {
@@ -126,7 +126,7 @@
         .step-number {
             width: 38px;
             height: 38px;
-            background: white;
+            background: var(--bg);
             color: var(--primary);
             border: 2px solid var(--primary);
             border-radius: 50%;
@@ -140,7 +140,7 @@
 
         .step-section.completed .step-number {
             background: var(--success);
-            color: white;
+            color: var(--bg);
             border-color: var(--success);
         }
 
@@ -174,7 +174,7 @@
         .step-content {
             max-height: 0;
             overflow: hidden;
-            background: white;
+            background: var(--surface);
             transition: max-height 0.5s ease, padding 0.5s ease;
             padding: 0 1.25rem;
             font-size: 0.95rem;
@@ -209,7 +209,7 @@
             top: 0.75rem;
             right: 0.75rem;
             background: var(--primary);
-            color: white;
+            color: var(--bg);
             border: none;
             padding: 0.4rem 0.85rem;
             border-radius: 3px;
@@ -347,7 +347,7 @@
             display: inline-block;
             position: relative;
             flex-shrink: 0;
-            background: white;
+            background: var(--bg);
         }
 
         .checklist li.checked .checkbox {
@@ -361,7 +361,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            color: white;
+            color: var(--bg);
             font-weight: bold;
             font-size: 0.75rem;
         }
@@ -405,7 +405,7 @@
         }
 
         .ref-item {
-            background: white;
+            background: var(--bg);
             padding: 0.75rem;
             border-radius: 4px;
             border: 1px solid var(--border);
@@ -476,8 +476,6 @@
         <header>
             <h1>AI AGENTS WORKSHOP</h1>
             <p class="subtitle">University of Washington • College of Built Environments • Architecture</p>
-            <p class="author-info"><strong>Md Shariful Alam (Anik)</strong>, Associate, Computational Designer, Mithun</p>
-            <p class="author-info">April 15, 2026 • Mithun</p>
         </header>
 
         <div class="intro">
@@ -583,7 +581,7 @@
 
             <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">Example Function</h3>
             <div class="code-block">
-                <code>make_random_circles(radius, point_cloud)</code>
+                <code>make_circle(radius, x, y)</code>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
             </div>
             <p>This function accepts three parameters and creates a circle in Rhino at specified coordinates.</p>
@@ -756,7 +754,7 @@
             <p>Try these conversational commands in your connected LLM:</p>
 
             <div class="code-block">
-                <code>"Create 5 random circles with radiius 25 in Rhino"</code>
+                <code>"Create 5 random circles in Rhino"</code>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
             </div>
 
@@ -766,7 +764,7 @@
             </div>
 
             <div class="code-block">
-                <code>"Generate 25 random circles"</code>
+                <code>"Generate a grid of points 10x10"</code>
                 <button class="copy-btn" onclick="copyCode(this)">Copy</button>
             </div>
 
