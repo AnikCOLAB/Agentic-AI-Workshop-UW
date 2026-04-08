@@ -1,5 +1,6 @@
 # Agentic AI Workshop for Architecture Students
 **University of Washington | Building AI Agents for CAD Environments**
+see interactive session here: https://anikcolab.github.io/Agentic-AI-Workshop-UW/
 
 ## Overview
 Build AI agents that interact with Rhino3D through natural language. This workshop explores the intersection between AI and automation, where traditional automation provides deterministic workflows with clear inputs and outputs, while AI agents bring contextual intelligence to mainstream these processes with thoughtful integration.
