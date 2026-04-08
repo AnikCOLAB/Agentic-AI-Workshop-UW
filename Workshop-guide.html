@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agents Workshop - UW Architecture</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563EB;
+            --secondary: #7C3AED;
+            --accent: #DC2626;
+            --bg: #FFFFFF;
+            --surface: #F8FAFC;
+            --text: #1E293B;
+            --text-muted: #64748B;
+            --success: #059669;
+            --border: #E2E8F0;
+        }
+
+        body {
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 0 1rem;
+            position: relative;
+            border-bottom: 2px solid var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            letter-spacing: 0.02em;
+            font-weight: 500;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 300;
+            margin-bottom: 0.75rem;
+        }
+
+        .author-info {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+            font-weight: 300;
+        }
+
+        .author-info strong {
+            font-weight: 400;
+            color: var(--text);
+        }
+
+        .intro {
+            background: var(--surface);
+            padding: 1.25rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            border-left: 3px solid var(--primary);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            font-size: 0.95rem;
+        }
+
+        .steps-container {
+            margin: 2rem 0;
+        }
+
+        .step-section {
+            margin-bottom: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .step-section:hover {
+            border-color: var(--primary);
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.08);
+        }
+
+        .step-header {
+            padding: 1rem 1.25rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            background: var(--surface);
+            transition: background 0.2s;
+        }
+
+        .step-header:hover {
+            background: rgba(37, 99, 235, 0.05);
+        }
+
+        .step-section.active .step-header {
+            background: rgba(37, 99, 235, 0.08);
+        }
+
+        .step-number {
+            width: 38px;
+            height: 38px;
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .step-section.completed .step-number {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .step-header-text {
+            flex: 1;
+        }
+
+        .step-title {
+            font-weight: 500;
+            font-size: 1.05rem;
+            margin-bottom: 0.15rem;
+            color: var(--text);
+        }
+
+        .step-description {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .step-toggle {
+            font-size: 1.2rem;
+            color: var(--primary);
+            transition: transform 0.3s;
+        }
+
+        .step-section.active .step-toggle {
+            transform: rotate(180deg);
+        }
+
+        .step-content {
+            max-height: 0;
+            overflow: hidden;
+            background: white;
+            transition: max-height 0.5s ease, padding 0.5s ease;
+            padding: 0 1.25rem;
+            font-size: 0.95rem;
+        }
+
+        .step-section.active .step-content {
+            max-height: 5000px;
+            padding: 1.25rem;
+            padding-top: 0.5rem;
+        }
+
+        .code-block {
+            background: var(--surface);
+            padding: 1rem;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            margin: 0.75rem 0;
+            position: relative;
+            overflow-x: auto;
+            font-size: 0.85rem;
+            font-family: 'Courier New', monospace;
+        }
+
+        .code-block code {
+            color: var(--primary);
+            font-family: 'Courier New', monospace;
+            display: block;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.4rem 0.85rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-family: 'Roboto', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 400;
+            transition: all 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--secondary);
+        }
+
+        .copy-btn:active {
+            transform: scale(0.95);
+        }
+
+        h2, h3, h4 {
+            font-family: 'Roboto', sans-serif;
+            font-weight: 500;
+        }
+
+        h2 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        h3 {
+            color: var(--primary);
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-size: 1.05rem;
+        }
+
+        h4 {
+            color: var(--text-muted);
+            margin-top: 1.25rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            font-weight: 400;
+        }
+
+        .info-box {
+            background: rgba(37, 99, 235, 0.05);
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            border-left: 3px solid var(--primary);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .info-box-title {
+            font-weight: 500;
+            color: var(--primary);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .warning-box {
+            background: rgba(220, 38, 38, 0.05);
+            border: 1px solid rgba(220, 38, 38, 0.2);
+            border-left: 3px solid var(--accent);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+
+        .warning-box-title {
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        ul {
+            margin: 0.75rem 0 0.75rem 1.75rem;
+        }
+
+        li {
+            margin: 0.4rem 0;
+            color: var(--text);
+        }
+
+        ol {
+            margin: 0.75rem 0 0.75rem 1.75rem;
+        }
+
+        ol li {
+            margin: 0.4rem 0;
+        }
+
+        .checklist {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .checklist li {
+            padding: 0.6rem;
+            margin: 0.4rem 0;
+            background: var(--surface);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .checklist li:hover {
+            background: rgba(37, 99, 235, 0.05);
+            border-color: var(--primary);
+        }
+
+        .checklist li.checked {
+            background: rgba(5, 150, 105, 0.1);
+            border-color: var(--success);
+            color: var(--text);
+        }
+
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            border: 2px solid var(--border);
+            border-radius: 3px;
+            display: inline-block;
+            position: relative;
+            flex-shrink: 0;
+            background: white;
+        }
+
+        .checklist li.checked .checkbox {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .checklist li.checked .checkbox::after {
+            content: '✓';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+
+        .architecture-diagram {
+            background: var(--surface);
+            padding: 1.25rem;
+            border-radius: 4px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            border: 1px solid var(--border);
+        }
+
+        .architecture-diagram pre {
+            color: var(--primary);
+            font-size: 0.8rem;
+        }
+
+        .quick-ref {
+            background: var(--surface);
+            padding: 1.25rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            border: 2px solid var(--primary);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .quick-ref h3 {
+            color: var(--primary);
+            margin-bottom: 0.75rem;
+            margin-top: 0;
+            font-weight: 500;
+            font-size: 1.05rem;
+        }
+
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .ref-item {
+            background: white;
+            padding: 0.75rem;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+        }
+
+        .ref-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+            font-weight: 300;
+        }
+
+        .ref-value {
+            color: var(--primary);
+            font-weight: 400;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 2.5rem;
+            border-top: 1px solid var(--border);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .troubleshooting {
+            margin-top: 1.25rem;
+        }
+
+        .trouble-item {
+            background: var(--surface);
+            padding: 1rem;
+            border-radius: 4px;
+            margin: 0.75rem 0;
+            border-left: 3px solid var(--accent);
+            border: 1px solid var(--border);
+            border-left: 3px solid var(--accent);
+        }
+
+        .trouble-title {
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 0.4rem;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .progress-tracker {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI AGENTS WORKSHOP</h1>
+            <p class="subtitle">University of Washington • Architecture</p>
+            <p class="author-info"><strong>Md Shariful Alam (Anik)</strong>, Associate, Computational Designer, Mithun</p>
+            <p class="author-info">April 15, 2026 • Mithun</p>
+        </header>
+
+        <div class="intro">
+            <p>Build AI agents that interact with Rhino3D through natural language. Learn the complete workflow: <strong>function creation → local hosting → public exposure → LLM integration</strong></p>
+        </div>
+
+        <div class="quick-ref">
+            <h3>Quick Reference</h3>
+            <div class="ref-grid">
+                <div class="ref-item">
+                    <div class="ref-label">Local MCP</div>
+                    <div class="ref-value">localhost:3001/mcp/</div>
+                </div>
+                <div class="ref-item">
+                    <div class="ref-label">MCP Inspector</div>
+                    <div class="ref-value">localhost:6274</div>
+                </div>
+                <div class="ref-item">
+                    <div class="ref-label">Swiftlet Plugin</div>
+                    <div class="ref-value">food4rhino.com</div>
+                </div>
+                <div class="ref-item">
+                    <div class="ref-label">ngrok Setup</div>
+                    <div class="ref-value">ngrok.com</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="steps-container">
+            <div class="step-section active" data-step="0">
+                <div class="step-header" onclick="toggleStep(0)">
+                    <div class="step-number">0</div>
+                    <div class="step-header-text">
+                        <div class="step-title">Prerequisites</div>
+                        <div class="step-description">Setup & Installation</div>
+                    </div>
+                    <div class="step-toggle">▼</div>
+                </div>
+                <div class="step-content">
+                    <h3 style="margin-top: 1.5rem;">Required Software</h3>
+            <p>Before starting, ensure you have all necessary software installed on your machine.</p>
+
+            <ul class="checklist" style="margin-top: 1.5rem;">
+                <li onclick="toggleCheck(this)">
+                    <span class="checkbox"></span>
+                    <span>Rhino 8 installed (includes RhinoCompute)</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <span class="checkbox"></span>
+                    <span>Swiftlet installed via Package Manager</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <span class="checkbox"></span>
+                    <span>Rhino restarted after Swiftlet installation</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <span class="checkbox"></span>
+                    <span>Node.js installed</span>
+                </li>
+                <li onclick="toggleCheck(this)">
+                    <span class="checkbox"></span>
+                    <span>ngrok account created (free tier, no billing required)</span>
+                </li>
+            </ul>
+
+            <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">LLM Access</h3>
+            <p><strong>For Claude:</strong> Free account works perfectly. Download the desktop application and enable Developer Mode in settings.</p>
+                    <p style="margin-top: 1rem;"><strong>For ChatGPT:</strong> Pro account minimum required to access Developer Mode functionality.</p>
+                </div>
+            </div>
+
+            <div class="step-section" data-step="1">
+                <div class="step-header" onclick="toggleStep(1)">
+                    <div class="step-number">1</div>
+                    <div class="step-header-text">
+                        <div class="step-title">Create Functions (Tools)</div>
+                        <div class="step-description">Grasshopper Tools</div>
+                    </div>
+                    <div class="step-toggle">▼</div>
+                </div>
+                <div class="step-content">
+                    <h3 style="margin-top: 1.5rem;">What Happens</h3>
+                    <p><strong>File:</strong> <code>swiftlet_example.gh</code></p>
+                    
+                    <p style="margin-top: 1.5rem;">Open the Grasshopper file to define your functions with specific inputs and outputs. Swiftlet takes these Grasshopper definitions and converts them into callable endpoints that can be accessed over HTTP.</p>
+
+            <div class="architecture-diagram">
+                <pre>┌─────────────┐      ┌──────────┐      ┌────────┐      ┌─────────┐
+│  Rhino3D    │──────│ Swiftlet │──────│ ngrok  │──────│  Claude │
+│  Functions  │      │  :3001   │      │ Tunnel │      │   LLM   │
+└─────────────┘      └──────────┘      └────────┘      └─────────┘
+     (GH)           (Local MCP)      (Public URL)    (AI Agent)</pre>
+            </div>
+
+            <div class="info-box">
+                <div class="info-box-title">Technical Details</div>
+                <ul>
+                    <li><strong>Host:</strong> localhost:3001</li>
+                    <li><strong>Protocol:</strong> MCP (Model Context Protocol)</li>
+                    <li><strong>Structure:</strong> Input parameters → Processing logic → Output confirmation</li>
+                </ul>
+            </div>
+
+            <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">Example Function</h3>
+            <div class="code-block">
+                <code>make_random_circles(radius, point_cloud)</code>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+            <p>This function accepts three parameters and creates a circle in Rhino at specified coordinates.</p>
+
+                    <div class="warning-box">
+                        <div class="warning-box-title">Important</div>
+                        Your functions will automatically be hosted on <code>localhost:3001</code> when Swiftlet is running in Rhino.
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-section" data-step="2">
+                <div class="step-header" onclick="toggleStep(2)">
+                    <div class="step-number">2</div>
+                    <div class="step-header-text">
+                        <div class="step-title">Inspect MCP Locally</div>
+                        <div class="step-description">Local Testing</div>
+                    </div>
+                    <div class="step-toggle">▼</div>
+                </div>
+                <div class="step-content">
+                    <h3 style="margin-top: 1.5rem;">Install MCP Inspector</h3>
+            <p>Run this command in your terminal:</p>
+
+            <div class="code-block">
+                <code>npx @modelcontextprotocol/inspector</code>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+
+            <p>The inspector will automatically open at <code>localhost:6274</code></p>
+
+            <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">Configure Connection</h3>
+            
+            <p><strong>MCP URL:</strong></p>
+            <div class="code-block">
+                <code>http://localhost:3001/mcp/</code>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+
+            <p style="margin-top: 1.5rem;"><strong>Connection Settings:</strong></p>
+            <ul>
+                <li>Transport Type: <code>Streamable HTTP</code></li>
+                <li>Connection Type: <code>Via Proxy</code></li>
+            </ul>
+
+            <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">Verify Your Setup</h3>
+            <p>Once connected, navigate to the "Tools" tab in the inspector to view all available functions. Test each one by providing sample inputs and verifying that outputs return correctly.</p>
+
+                    <div class="info-box">
+                        <div class="info-box-title">Why This Matters</div>
+                        This validation step ensures your MCP structure is properly configured before you expose it publicly to external services.
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-section" data-step="3">
+                <div class="step-header" onclick="toggleStep(3)">
+                    <div class="step-number">3</div>
+                    <div class="step-header-text">
+                        <div class="step-title">Expose Local Server Publicly</div>
+                        <div class="step-description">ngrok Tunnel</div>
+                    </div>
+                    <div class="step-toggle">▼</div>
+                </div>
+                <div class="step-content">
+                    <div class="warning-box" style="margin-top: 1.5rem;">
+                        <div class="warning-box-title">The Problem</div>
+                        Modern LLM services implement strict security policies that block direct access to local servers running on your machine.
+                    </div>
+                    
+                    <h3>The Solution: ngrok Tunnel</h3>
+            
+            <p>Create a secure tunnel that bridges your localhost with the public internet.</p>
+
+            <h4 style="color: var(--text-muted); margin-top: 2rem; margin-bottom: 1rem;">Setup (One-time):</h4>
+            <ol style="margin-left: 2rem;">
+                <li>Create a free account at <a href="https://ngrok.com" target="_blank" style="color: var(--accent);">ngrok.com</a></li>
+                <li>Download ngrok for your operating system</li>
+                <li>Authenticate with your token:</li>
+            </ol>
+
+            <div class="code-block">
+                <code>ngrok config add-authtoken &lt;YOUR_TOKEN&gt;</code>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+
+            <h4 style="color: var(--text-muted); margin-top: 2rem; margin-bottom: 1rem;">Start the Tunnel:</h4>
+            <div class="code-block">
+                <code>ngrok http 3001 --host-header=rewrite</code>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+
+            <p style="margin-top: 1.5rem;"><strong>Expected Output:</strong></p>
+            <div class="code-block">
+                <code>Forwarding: https://[random-name].ngrok-free.dev → localhost:3001</code>
+            </div>
+
+            <p style="margin-top: 1rem;">Copy your unique ngrok URL from the output. This URL remains active as long as the ngrok process is running.</p>
+
+            <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">Verify Public Access</h3>
+            <p>Test your public endpoint in the MCP Inspector:</p>
+            <div class="code-block">
+                <code>https://[your-ngrok-url].ngrok-free.dev/mcp</code>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+
+                    <div class="info-box">
+                        <div class="info-box-title">Technical Note</div>
+                        The <code>--host-header=rewrite</code> flag ensures Swiftlet accepts the forwarded requests despite them arriving from a different domain.
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-section" data-step="4">
+                <div class="step-header" onclick="toggleStep(4)">
+                    <div class="step-number">4</div>
+                    <div class="step-header-text">
+                        <div class="step-title">Connect to LLM</div>
+                        <div class="step-description">Claude / ChatGPT</div>
+                    </div>
+                    <div class="step-toggle">▼</div>
+                </div>
+                <div class="step-content">
+                    <h3 style="margin-top: 1.5rem;">For Claude (Desktop App)</h3>
+            
+            <ol style="margin-left: 2rem;">
+                <li>Open Claude desktop application</li>
+                <li>Navigate to <strong>Settings</strong> → Enable <strong>Developer Mode</strong></li>
+                <li>Create a new <strong>Custom Connector</strong>:
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li><strong>Name:</strong> Rhino Agent (or any name you prefer)</li>
+                        <li><strong>URL:</strong> <code>https://[your-ngrok-url].ngrok-free.dev/mcp</code></li>
+                    </ul>
+                </li>
+                <li>Save and activate the connector</li>
+            </ol>
+
+            <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">For ChatGPT (Pro Account Required)</h3>
+            
+            <ol style="margin-left: 2rem;">
+                <li>Open ChatGPT settings</li>
+                <li>Enable <strong>Developer Mode</strong> (requires Pro subscription)</li>
+                <li>Create a <strong>Custom App</strong>:
+                    <ul style="margin-left: 2rem; margin-top: 0.5rem;">
+                        <li><strong>Name:</strong> CAD Assistant (or any name you prefer)</li>
+                        <li><strong>MCP URL:</strong> <code>https://[your-ngrok-url].ngrok-free.dev/mcp</code></li>
+                    </ul>
+                </li>
+                <li>Authorize and enable the app</li>
+            </ol>
+
+                    <div class="warning-box">
+                        <div class="warning-box-title">Important</div>
+                        Replace <code>[your-ngrok-url]</code> with your actual ngrok forwarding URL from Step 3.
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-section" data-step="5">
+                <div class="step-header" onclick="toggleStep(5)">
+                    <div class="step-number">5</div>
+                    <div class="step-header-text">
+                        <div class="step-title">Test & Debug</div>
+                        <div class="step-description">Prompts & Troubleshooting</div>
+                    </div>
+                    <div class="step-toggle">▼</div>
+                </div>
+                <div class="step-content">
+                    <h3 style="margin-top: 1.5rem;">Testing Prompts</h3>
+            <p>Try these conversational commands in your connected LLM:</p>
+
+            <div class="code-block">
+                <code>"Create 5 random circles with radiius 25 in Rhino"</code>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+
+            <div class="code-block">
+                <code>"Make a cylinder at origin with radius 10 and height 50"</code>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+
+            <div class="code-block">
+                <code>"Generate 25 random circles"</code>
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            </div>
+
+            <h3 style="color: var(--primary); margin-top: 2rem; margin-bottom: 1rem;">Behind the Scenes</h3>
+            <p>When you send a prompt:</p>
+            <ol style="margin-left: 2rem;">
+                <li>The LLM parses your intent and selects the appropriate function</li>
+                <li>It generates necessary parameters (radius, coordinates, etc.)</li>
+                <li>The LLM calls the function through the ngrok tunnel</li>
+                <li>ngrok routes to Swiftlet on your local machine</li>
+                <li>Swiftlet executes the Grasshopper component</li>
+                <li>Result returns through the chain back to the LLM</li>
+                <li>The LLM formulates a natural language response</li>
+            </ol>
+
+            <div class="troubleshooting">
+                <h3 style="color: var(--primary); margin-bottom: 1.5rem;">Troubleshooting</h3>
+
+                <div class="trouble-item">
+                    <div class="trouble-title">MCP Inspector won't connect to local server</div>
+                    <ul>
+                        <li>Verify Swiftlet is running in Rhino (check Grasshopper component is active)</li>
+                        <li>Confirm port 3001 is not being used by another application</li>
+                        <li>Restart Rhino and reopen the Grasshopper file</li>
+                    </ul>
+                </div>
+
+                <div class="trouble-item">
+                    <div class="trouble-title">ngrok tunnel fails to start</div>
+                    <ul>
+                        <li>Re-run the authentication command: <code>ngrok config add-authtoken &lt;YOUR_TOKEN&gt;</code></li>
+                        <li>Check if you have an active internet connection</li>
+                        <li>Verify you haven't exceeded free tier limits (1 tunnel for free accounts)</li>
+                    </ul>
+                </div>
+
+                <div class="trouble-item">
+                    <div class="trouble-title">Functions not appearing in MCP Inspector</div>
+                    <ul>
+                        <li>Refresh the MCP Inspector browser page</li>
+                        <li>Verify the Grasshopper component is properly configured</li>
+                        <li>Check that Swiftlet shows "Server Running" status</li>
+                    </ul>
+                </div>
+
+                <div class="trouble-item">
+                    <div class="trouble-title">LLM cannot access the MCP server</div>
+                    <ul>
+                        <li>Update your connector/app URL with the current ngrok forwarding address</li>
+                        <li>Verify the ngrok process is still running (it stops if terminal is closed)</li>
+                        <li>Test the public URL directly in MCP Inspector first</li>
+                        <li>Ensure Developer Mode is enabled in your LLM settings</li>
+                    </ul>
+                </div>
+
+                <div class="trouble-item">
+                    <div class="trouble-title">ngrok URL keeps changing</div>
+                    <ul>
+                        <li>Free ngrok accounts generate new URLs each session</li>
+                        <li>Paid accounts offer static domains</li>
+                        <li>Remember to update your LLM connector URL when ngrok restarts</li>
+                    </ul>
+                </div>
+            </div>
+
+                    <div class="info-box" style="margin-top: 2rem;">
+                        <div class="info-box-title">Pro Tip</div>
+                        Keep three terminals open during the workshop:
+                        <ol style="margin-left: 2rem; margin-top: 0.5rem;">
+                            <li>MCP Inspector (<code>npx @modelcontextprotocol/inspector</code>)</li>
+                            <li>ngrok tunnel (<code>ngrok http 3001 --host-header=rewrite</code>)</li>
+                            <li>General purpose terminal for testing</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>AI Agents Workshop • University of Washington Architecture</p>
+            <p style="margin-top: 0.75rem; font-size: 0.85rem;"><strong>Md Shariful Alam (Anik)</strong>, Associate, Computational Designer, Mithun</p>
+            <p style="margin-top: 0.25rem; font-size: 0.85rem;">April 15, 2026 • Mithun</p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleCheck(element) {
+            element.classList.toggle('checked');
+        }
+
+        function copyCode(button) {
+            const codeBlock = button.parentElement;
+            const code = codeBlock.querySelector('code').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.style.background = 'var(--success)';
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = 'var(--primary)';
+                }, 2000);
+            });
+        }
+
+        function toggleStep(step) {
+            const section = document.querySelector(`.step-section[data-step="${step}"]`);
+            const isActive = section.classList.contains('active');
+            
+            // Close all sections
+            document.querySelectorAll('.step-section').forEach(s => {
+                s.classList.remove('active');
+            });
+            
+            // If it wasn't active, open it
+            if (!isActive) {
+                section.classList.add('active');
+                // Smooth scroll to the section
+                setTimeout(() => {
+                    section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+        }
+
+        // Mark completed steps
+        document.addEventListener('DOMContentLoaded', () => {
+            const sections = document.querySelectorAll('.step-section');
+            sections.forEach((section, index) => {
+                section.addEventListener('click', () => {
+                    // Mark all previous steps as completed
+                    sections.forEach((s, i) => {
+                        if (i < index) {
+                            s.classList.add('completed');
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
